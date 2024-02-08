@@ -26,6 +26,7 @@ def draw_map_with_arrows(locations):
         ax.text(lon+3, lat+3, str(i), color='blue')
     for i in range(len(locations)-1):
       ax.plot([locations[i][0],locations[i+1][0]],[locations[i][1],locations[i+1][1]],color='red',linewidth=2,marker='o')
+    plt.show()
     plt.savefig('plot.png')
 
 def geolocate(ip):
