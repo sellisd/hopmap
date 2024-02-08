@@ -7,23 +7,25 @@ import cartopy.feature as cfeature
 import requests
 
 
+@click.command()
+@click.option('--host', default='102.128.168.1')
+def plot(host):
+  locations = traceroute(host)
+  draw_map_with_arrows(locations)
+
 def draw_map_with_arrows(locations):
-    fig = plt.figure(figsize=(10, 5))
-    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    ax.set_global()
     ax.add_feature(cfeature.LAND, facecolor='lightgray')
     ax.add_feature(cfeature.OCEAN)
     ax.add_feature(cfeature.COASTLINE)
     ax.add_feature(cfeature.BORDERS, linestyle=':')
+    locations = [loc for loc in locations if all(elem is not None for elem in loc)]
+    for (i, (lon, lat)) in enumerate(locations):
+      if lon and lat:
+        ax.text(lon+3, lat+3, str(i), color='blue')
     for i in range(len(locations)-1):
-        if None in locations[i] or None in locations[i+1]:  # skip if missing values
-            continue
-        lons = [locations[i][1], locations[i+1][1]]
-        lats = [locations[i][0], locations[i+1][0]]
-        #ax.plot(lons, lats, 'o-', transform=ccrs.Geodetic(), color='red')
-        ax.set_global()
-        ax.scatter(locations[i][0], locations[i][1],color="red",transform=ccrs.Geodetic() )
-        #ax.arrow(lons[0], lats[0], lons[1]-lons[0], lats[1]-lats[0], color='blue', transform=ccrs.Geodetic(), width=0.5)
-        #ax.quiver(lons[0], lats[0], lons[1]-lons[0], lats[1]-lats[0], scale_units='xy', angles='xy', scale=1, color='blue', transform=ccrs.PlateCarree())
+      ax.plot([locations[i][0],locations[i+1][0]],[locations[i][1],locations[i+1][1]],color='red',linewidth=2,marker='o')
     plt.show()
 
 def geolocate(ip):
@@ -32,10 +34,8 @@ def geolocate(ip):
   return data
 
 
-@click.command()
-@click.argument('host')
 def traceroute(host):
-  command = ['traceroute', '-n',  host]
+  command = ['traceroute', '-n', '-w', '10.0,3.0,10.0', host]
   process = subprocess.Popen(command, stdout=subprocess.PIPE)
   first_line = True
   locations = []
@@ -65,8 +65,8 @@ def parse_traceroute_line(line):
     if data['status'] == 'success':
       longitude = data['lon']
       latitude = data['lat']
-  return (hop_num, latitude, longitude, hop_ip)
+  return (hop_num, longitude, latitude, hop_ip)
 
 
 if __name__ == '__main__':
-    traceroute()
+    plot()
