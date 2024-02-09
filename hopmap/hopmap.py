@@ -26,7 +26,7 @@ def plot(host, url):
 
 def draw_map_with_arrows(locations):
     ax = plt.axes(projection=ccrs.PlateCarree())
-    #ax.set_global()
+    ax.set_global()
     ax.add_feature(cfeature.LAND, facecolor='lightgray')
     ax.add_feature(cfeature.OCEAN)
     ax.add_feature(cfeature.COASTLINE)
@@ -34,9 +34,9 @@ def draw_map_with_arrows(locations):
     locations = [loc for loc in locations if all(elem is not None for elem in loc)]
     for (i, (lon, lat)) in enumerate(locations):
       if lon and lat:
-        ax.text(lon+3, lat+3, str(i), color='blue')
+        ax.text(lon+1, lat+1, str(i), color='blue')
     for i in range(len(locations)-1):
-      ax.plot([locations[i][0],locations[i+1][0]],[locations[i][1],locations[i+1][1]],color='red',linewidth=2,marker='o')
+      ax.plot([locations[i][0],locations[i+1][0]],[locations[i][1],locations[i+1][1]],color='darkred',linewidth=2,marker='o', transform=ccrs.Geodetic())
     plt.show()
     plt.savefig('plot.png')
 
