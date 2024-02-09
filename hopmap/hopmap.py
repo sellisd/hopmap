@@ -5,17 +5,28 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import requests
+import socket
+
+def get_ip_address(url):
+    return socket.gethostbyname(url)
 
 
 @click.command()
-@click.option('--host', default='102.128.168.1')
-def plot(host):
+@click.option('--host', help='An IPv4 address, e.g. 102.128.168.1')
+@click.option('--url', help='A url, e.g. www.eef.edu.gr')
+def plot(host, url):
+  if host and url:
+    raise click.UsageError("You can't provide both --host and --url at the same time.")
+  elif url:
+    host = get_ip_address(url)
+  elif not url and not host:
+    raise click.UsageError("You have to provide either --host or --url.")
   locations = traceroute(host)
   draw_map_with_arrows(locations)
 
 def draw_map_with_arrows(locations):
     ax = plt.axes(projection=ccrs.PlateCarree())
-    ax.set_global()
+    #ax.set_global()
     ax.add_feature(cfeature.LAND, facecolor='lightgray')
     ax.add_feature(cfeature.OCEAN)
     ax.add_feature(cfeature.COASTLINE)
