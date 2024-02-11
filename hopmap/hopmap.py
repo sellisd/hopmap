@@ -32,6 +32,8 @@ def draw_map_with_arrows(locations):
     ax.add_feature(cfeature.COASTLINE)
     ax.add_feature(cfeature.BORDERS, linestyle=':')
     locations = [loc for loc in locations if all(elem is not None for elem in loc)]
+    if len(locations) < 2:
+      return
     for (i, (lon, lat)) in enumerate(locations):
       if lon and lat:
         ax.text(lon+1, lat+1, str(i), color='blue')
@@ -47,7 +49,7 @@ def geolocate(ip):
 
 
 def traceroute(host):
-  command = ['traceroute', '-n', '-w', '10.0,3.0,10.0', host]
+  command = ['traceroute', '-n', host]
   process = subprocess.Popen(command, stdout=subprocess.PIPE)
   first_line = True
   locations = []
