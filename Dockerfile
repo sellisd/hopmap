@@ -15,4 +15,4 @@ ENV PYTHONPATH=/app
 RUN python -m pip install .
 
 # Run the command to start your application
-CMD ["hopmap plot"]
+ENTRYPOINT ["hopmap"]
