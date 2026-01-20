@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "hopmap"
 version = "0.1.0"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "cartopy>=0.25.0",
     "click>=8.3.1",
