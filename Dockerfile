@@ -1,18 +1,20 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11.8-slim-bookworm
+FROM ghcr.io/astral-sh/uv:python3.13-trixie-slim
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
     traceroute
+
 # Set the working directory in the container to /app
 WORKDIR /app
 
 # Add the current directory contents into the container at /app
-ADD . /app
+COPY . /app
 ENV PYTHONPATH=/app
+# Disable development dependencies
+ENV UV_NO_DEV=1
 
-# Install any needed packages specified in requirements.txt
-RUN python -m pip install .
+RUN uv sync
 
 # Run the command to start your application
-ENTRYPOINT ["hopmap"]
+ENTRYPOINT ["uv", "run", "hopmap"]
