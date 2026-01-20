@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11.8-slim-bookworm
+FROM python:3.14.2-slim-trixie
 
 # Install required packages
 RUN apt-get update && apt-get install -y \
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Add the current directory contents into the container at /app
-ADD . /app
+COPY . /app
 ENV PYTHONPATH=/app
 
 # Install any needed packages specified in requirements.txt
