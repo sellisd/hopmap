@@ -49,7 +49,7 @@ def geolocate(ip):
 
 
 def traceroute(host):
-  command = ['traceroute', '-n', host]
+  command = ['sudo', 'traceroute', '-nT', host]
   process = subprocess.Popen(command, stdout=subprocess.PIPE)
   first_line = True
   locations = []
